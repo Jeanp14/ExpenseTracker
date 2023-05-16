@@ -8,4 +8,8 @@ const ManageExpense = () => {
     )
 }
 
+const styles = StyleSheet.create({
+    
+})
+
 export default ManageExpense;
