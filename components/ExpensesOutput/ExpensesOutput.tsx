@@ -3,7 +3,7 @@ import ExpensesList from './ExpensesList';
 import ExpensesSummary from './ExpensesSummary';
 import { GlobalStyles } from '../../constants/styles';
 
-const DUMMY_EXPENSES = [
+/* const DUMMY_EXPENSES = [
     {
         id: 'e1',
         description: 'A pair of shoes',
@@ -34,13 +34,13 @@ const DUMMY_EXPENSES = [
         amount: 499.99,
         date: new Date('2022-12-21')
     }
-];
+]; */
 
 const ExpensesOutput = ({expenses, expensesPeriod}: any) => {
     return(
         <View style={styles.container}>
-            <ExpensesSummary expenses={DUMMY_EXPENSES} periodName={expensesPeriod}/>
-            <ExpensesList expenses={DUMMY_EXPENSES}/>
+            <ExpensesSummary expenses={expenses} periodName={expensesPeriod}/>
+            <ExpensesList expenses={expenses}/>
         </View>
     );
 }
