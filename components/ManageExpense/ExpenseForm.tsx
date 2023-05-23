@@ -66,7 +66,7 @@ const ExpenseForm = ({submitButtonLabel, onCancel, onSubmit, defaultValues}: any
 
     const formIsInvalid = !inputs.amount.isValid || !inputs.date.isValid || !inputs.description.isValid;
 
-    return(
+    return(        
         <View style={styles.form}>
             <Text style={styles.title}>Your expense</Text>
             <View style={styles.inputsRow}>
