@@ -1,7 +1,14 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { GlobalStyles } from '../../constants/styles';
 
-const Input = ({label, style, textInputConfig}: any) => {
+type InputProps = {
+    label: string,
+    style: any,
+    invalid: boolean,
+    textInputConfig: object
+}
+
+const Input = ({label, style, invalid, textInputConfig}: any) => {
 
     const inputStyles = [styles.input];
 
@@ -9,11 +16,18 @@ const Input = ({label, style, textInputConfig}: any) => {
         inputStyles.push(styles.inputMultiline as any)
     }
 
+    if(invalid){
+        inputStyles.push(styles.invalidInput as any)
+    }
+
     return(
-        <View style={[styles.inputContainer, style]}>
-            <Text style={styles.label}>{label}</Text>
+        //<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <View style={[styles.inputContainer, style]}>
+            <Text style={[styles.label, invalid && styles.invalidLabel]}>{label}</Text>
             <TextInput {...textInputConfig} style={inputStyles}/>
         </View>
+        //</TouchableWithoutFeedback>
+        
     )
 }
 
@@ -37,6 +51,12 @@ const styles = StyleSheet.create({
     inputMultiline: {
         minHeight: 100,
         textAlignVertical: 'top'
+    },
+    invalidLabel: {
+        color: GlobalStyles.colors.error500
+    },
+    invalidInput: {
+        backgroundColor: GlobalStyles.colors.error50
     }
 })
 
