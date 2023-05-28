@@ -1,4 +1,4 @@
-import { useLayoutEffect, useContext } from 'react';
+import { useLayoutEffect, useContext, useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import IconButton from '../components/ui/IconButton';
@@ -6,10 +6,11 @@ import { GlobalStyles } from '../constants/styles';
 import Button from '../components/ui/Button';
 import { ExpensesContext } from '../store/expenses-context';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
-import { storeExpense } from '../util/http';
+import { storeExpense, updateExpense, deleteExpense } from '../util/http';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
 
 const ManageExpense = ({route, navigation}: any) => {
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const expensesCtx = useContext(ExpensesContext);
     const editedExpenseId = route.params?.expenseId;
     const isEditing = !!editedExpenseId; //!! to convert to boolean
@@ -22,7 +23,9 @@ const ManageExpense = ({route, navigation}: any) => {
          });
     }, [navigation, isEditing]);
 
-    const deleteExpenseHandler = () => {
+    const deleteExpenseHandler = async() => {
+        setIsSubmitting(true);
+        await deleteExpense(editedExpenseId);
         expensesCtx.deleteExpense(editedExpenseId);
         navigation.goBack();
     }
@@ -31,14 +34,20 @@ const ManageExpense = ({route, navigation}: any) => {
         navigation.goBack();
     }
 
-    const confirmHandler = (expenseData: any) => {
+    const confirmHandler = async(expenseData: any) => {
+        setIsSubmitting(true);
         if(isEditing){
             expensesCtx.updateExpense(editedExpenseId, expenseData);
+            await updateExpense(editedExpenseId, expenseData);
         }else{
-            storeExpense(expenseData);
-            expensesCtx.addExpense(expenseData);
+            const id = await storeExpense(expenseData);
+            expensesCtx.addExpense({...expenseData, id: id});
         }
         navigation.goBack();
+    }
+
+    if(isSubmitting){
+        return <LoadingOverlay/>
     }
 
     return(
