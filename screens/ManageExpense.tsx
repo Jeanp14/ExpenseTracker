@@ -8,10 +8,14 @@ import { ExpensesContext } from '../store/expenses-context';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import { storeExpense, updateExpense, deleteExpense } from '../util/http';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
+import ErrorOverlay from '../components/ui/ErrorOverlay';
 
 const ManageExpense = ({route, navigation}: any) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<any>();
+
     const expensesCtx = useContext(ExpensesContext);
+    
     const editedExpenseId = route.params?.expenseId;
     const isEditing = !!editedExpenseId; //!! to convert to boolean
 
@@ -25,9 +29,14 @@ const ManageExpense = ({route, navigation}: any) => {
 
     const deleteExpenseHandler = async() => {
         setIsSubmitting(true);
-        await deleteExpense(editedExpenseId);
-        expensesCtx.deleteExpense(editedExpenseId);
-        navigation.goBack();
+        try{
+            await deleteExpense(editedExpenseId);
+            expensesCtx.deleteExpense(editedExpenseId);
+            navigation.goBack();
+        }catch(error){
+            setError('Could not delete expense - please try again later!');
+            setIsSubmitting(false);
+        }
     }
 
     const cancelHandler = () => {
@@ -36,14 +45,27 @@ const ManageExpense = ({route, navigation}: any) => {
 
     const confirmHandler = async(expenseData: any) => {
         setIsSubmitting(true);
-        if(isEditing){
-            expensesCtx.updateExpense(editedExpenseId, expenseData);
-            await updateExpense(editedExpenseId, expenseData);
-        }else{
-            const id = await storeExpense(expenseData);
-            expensesCtx.addExpense({...expenseData, id: id});
+        try{
+            if(isEditing){
+                expensesCtx.updateExpense(editedExpenseId, expenseData);
+                await updateExpense(editedExpenseId, expenseData);
+            }else{
+                const id = await storeExpense(expenseData);
+                expensesCtx.addExpense({...expenseData, id: id});
+            }
+            navigation.goBack();
+        }catch(error){
+            setError('Could not save data - please try again later!');
+            setIsSubmitting(false);
         }
-        navigation.goBack();
+    }
+
+    /* const errorHandler = () => {
+        setError(null);
+    } */
+
+    if(error && !isSubmitting){
+        return <ErrorOverlay message={error}/>
     }
 
     if(isSubmitting){
