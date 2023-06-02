@@ -11,6 +11,10 @@ import AllExpenses from './screens/AllExpenses';
 import { GlobalStyles } from './constants/styles';
 import IconButton from './components/ui/IconButton';
 import ExpensesContextProvider from './store/expenses-context';
+import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignUpScreen';
+import AuthContextProvider, { AuthContext } from './store/auth-context';
+import { useContext } from 'react';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -62,12 +66,10 @@ const ExpensesOverview = () => {
   )
 }
 
-export default function App() {
-  return (
-    <>
-      <StatusBar style="light" />
-      <ExpensesContextProvider>
-      <NavigationContainer>
+const AuthenticatedStack = () => {
+  return(
+    <ExpensesContextProvider>
+
         <Stack.Navigator 
           screenOptions={{
             headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
@@ -89,8 +91,49 @@ export default function App() {
             }}
           />
         </Stack.Navigator>
-      </NavigationContainer>
-      </ExpensesContextProvider>
+      
+    </ExpensesContextProvider>
+  )
+}
+
+const AuthStack = () => {
+  return(
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerTintColor: 'white',
+        contentStyle: { backgroundColor: GlobalStyles.colors.primary100 }
+      }}
+    >
+      <Stack.Screen
+        name='Login'
+        component={LoginScreen}
+      />
+      <Stack.Screen
+        name='SignUp'
+        component={SignupScreen}
+      />
+    </Stack.Navigator>
+  )
+}
+
+const Navigation = () => {
+  const authCtx = useContext(AuthContext);
+  return(
+    <NavigationContainer>
+      {!authCtx.isAuthenticated && <AuthStack/>}
+      {authCtx.isAuthenticated && <AuthenticatedStack/>}
+    </NavigationContainer>
+  )
+}
+
+export default function App() {
+  return (
+    <>
+      <StatusBar style="light" />
+      <AuthContextProvider>
+        <Navigation/>
+      </AuthContextProvider>
     </> 
   );
 }

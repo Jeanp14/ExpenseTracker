@@ -36,7 +36,7 @@ import { GlobalStyles } from '../../constants/styles';
     }
 ]; */
 
-const ExpensesOutput = ({expenses, expensesPeriod, fallbackText}: any) => {
+const ExpensesOutput = ({expenses, expensesPeriod, fallbackText}: {expenses: any, expensesPeriod: string, fallbackText: string}) => {
 
     let content = <Text style={styles.infoText}>{fallbackText}</Text>;
 
