@@ -20,8 +20,9 @@ const LoginScreen = () => {
       authCtx.authenticate(idToken);
     }catch(error){
       Alert.alert('Authentication failed!', 'Could not log you in. Please check your credentials or try again later.');
+      setIsAuthenticating(false);
     }
-    setIsAuthenticating(false);
+    //setIsAuthenticating(false);
   }
 
   if(isAuthenticating){
