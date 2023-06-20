@@ -8,7 +8,13 @@ import { fetchExpenses } from '../util/http';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import ErrorOverlay from '../components/ui/ErrorOverlay';
 
+import { AuthContext } from '../store/auth-context';
+
 const RecentExpenses = () => {
+    //use AuthContext to get user localId (uid)
+    const authCtx = useContext(AuthContext);
+    const localId = authCtx.localId;
+
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<any>();
 
@@ -18,7 +24,7 @@ const RecentExpenses = () => {
         const getExpenses = async() => {
             setIsFetching(true);
             try{
-                const expenses = await fetchExpenses();
+                const expenses = await fetchExpenses(localId);
                 expensesCtx.setExpenses(expenses);
             }
             catch(error){

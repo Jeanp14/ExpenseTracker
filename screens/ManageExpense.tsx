@@ -10,7 +10,12 @@ import { storeExpense, updateExpense, deleteExpense } from '../util/http';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import ErrorOverlay from '../components/ui/ErrorOverlay';
 
+import { AuthContext } from '../store/auth-context';
+
 const ManageExpense = ({route, navigation}: any) => {
+    const authCtx = useContext(AuthContext);
+    const localId = authCtx.localId;
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<any>();
 
@@ -30,7 +35,7 @@ const ManageExpense = ({route, navigation}: any) => {
     const deleteExpenseHandler = async() => {
         setIsSubmitting(true);
         try{
-            await deleteExpense(editedExpenseId);
+            await deleteExpense(editedExpenseId, localId);
             expensesCtx.deleteExpense(editedExpenseId);
             navigation.goBack();
         }catch(error){
@@ -48,9 +53,9 @@ const ManageExpense = ({route, navigation}: any) => {
         try{
             if(isEditing){
                 expensesCtx.updateExpense(editedExpenseId, expenseData);
-                await updateExpense(editedExpenseId, expenseData);
+                await updateExpense(editedExpenseId, expenseData, localId);
             }else{
-                const id = await storeExpense(expenseData);
+                const id = await storeExpense(expenseData, localId);
                 expensesCtx.addExpense({...expenseData, id: id});
             }
             navigation.goBack();

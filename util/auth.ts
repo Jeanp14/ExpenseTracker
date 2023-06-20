@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_KEY } from "../ignore/API";
 
-const API_KEY = 'AIzaSyB7orGyRp0tW9CTL0GxJE6P1fo7ktF2okM'
+//const API_KEY = 'AIzaSyB7orGyRp0tW9CTL0GxJE6P1fo7ktF2okM';
 
 const authenticate = async(mode: string, email: string, password: string) => {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${API_KEY}`;
@@ -18,8 +19,7 @@ const authenticate = async(mode: string, email: string, password: string) => {
     }catch(error){
         console.log(error);
         console.log('Api call failed');
-    }
-    
+    }  
 }
 
 export const createUser = (email: string, password: string) => {
@@ -40,7 +40,7 @@ export const createUser = (email: string, password: string) => {
 
 export class AuthInterface{
     private readonly  API_KEY:string='AIzaSyB7orGyRp0tW9CTL0GxJE6P1fo7ktF2okM';
-    private readonly  generateUrl=({mode}:{mode:'signInWithPassword'|'signUp'})=>{
+    private readonly  generateUrl=({mode}:{mode:'signInWithPassword'|'signUp'|'lookup'})=>{
         return `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${this.API_KEY}`
 
     }
@@ -53,6 +53,8 @@ export class AuthInterface{
                 returnSecureToken:true
                 //ask backend to return token; if token is returned, we know that the login was successful
                 })
+            console.log(data);
+            console.log({data});
             return data;
         }catch(err){
             const error=err as any
@@ -70,7 +72,7 @@ export class AuthInterface{
                 email,
                 password,
                 returnSecureToken:true
-                //ask backend to return token; if token is returned, we know that the login was successful
+                //ask backend to return token; if token is returned, we know that the signup was successful
                 })
                 return data;
         }catch(err){
@@ -81,6 +83,17 @@ export class AuthInterface{
         }
     }
 
-
+    getUserData = async({idToken}: {idToken: string}) => {
+        try{
+            const {data}=await axios.post(this.generateUrl({mode:'lookup'}),{
+                idToken
+                })
+            return data;
+        }catch(err){
+            const error=err as any
+            console.log('error in getting user data with',{...error})
+            return error.message
+        }
+    }
 
 }
