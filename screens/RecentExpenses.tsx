@@ -12,8 +12,8 @@ import { AuthContext } from '../store/auth-context';
 
 const RecentExpenses = () => {
     //use AuthContext to get user localId (uid)
-    const authCtx = useContext(AuthContext);
-    const localId = authCtx.localId;
+    const {localId} = useContext(AuthContext);
+    //const localId = authCtx.localId;
 
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState<any>();
@@ -33,7 +33,7 @@ const RecentExpenses = () => {
             setIsFetching(false);
         }
         getExpenses();
-    }, []);
+    }, [localId]);
 
     /* const errorHandler = () => {
         setError(null);

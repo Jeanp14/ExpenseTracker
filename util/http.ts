@@ -1,22 +1,10 @@
 import axios from "axios";
 import {AuthInterface} from './auth';
-import { AuthContext } from '../store/auth-context';
-import { useContext } from 'react';
 
 const BACKEND_URL = 'https://expensetracker-2c96f-default-rtdb.firebaseio.com';
 const {login, signup, getUserData} = new AuthInterface();
-//const authCtx = useContext(AuthContext);
-//const localId = authCtx.localId;
 
-/* export const getUID = async(uid: string) => {
-    const authCtx = useContext(AuthContext);
-    const localId = authCtx.localId;
-    console.log(uid);
-    return uid;
-}
- */
 export const storeExpense = async(expenseData: any, UID: string) => {
-    //const UID = getUID;
     console.log(UID);
     const response = await axios.post(BACKEND_URL + `/${UID}` + '/expenses.json', expenseData);
     const id = response.data.name;

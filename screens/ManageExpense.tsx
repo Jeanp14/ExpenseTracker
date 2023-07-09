@@ -13,8 +13,7 @@ import ErrorOverlay from '../components/ui/ErrorOverlay';
 import { AuthContext } from '../store/auth-context';
 
 const ManageExpense = ({route, navigation}: any) => {
-    const authCtx = useContext(AuthContext);
-    const localId = authCtx.localId;
+    const {localId} = useContext(AuthContext);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<any>();

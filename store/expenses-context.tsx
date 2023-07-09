@@ -24,18 +24,6 @@ type ExpenseDataProps = {
         description: 'Some bananas',
         amount: 4.49,
         date: new Date('2023-05-03')
-    },
-    {
-        id: 'e4',
-        description: 'A book',
-        amount: 13.89,
-        date: new Date('2023-03-15')
-    },
-    {
-        id: 'e5',
-        description: 'A PS5',
-        amount: 499.99,
-        date: new Date('2022-12-21')
     }
 ];  */
 
